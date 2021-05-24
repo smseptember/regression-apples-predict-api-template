@@ -61,12 +61,41 @@ def _preprocess_data(data):
     # ----------- Replace this code with your own preprocessing steps --------
     
 
-    feature_vector_df = feature_vector_df[(feature_vector_df['Commodities'] == 'APPLE GOLDEN DELICIOUS')]
-    predict_vector = feature_vector_df[['Total_Qty_Sold','Stock_On_Hand']]
+    #feature_vector_df = feature_vector_df[(feature_vector_df['Commodities'] == 'APPLE GOLDEN DELICIOUS')]
+    #predict_vector = feature_vector_df[['Total_Qty_Sold','Stock_On_Hand']]
+    
+    train = pd.read_csv('train_set.csv')
+    test = pd.read_csv('test_set.csv')
+
+    train = train.loc[(train['Commodities'] == 'APPLE GOLDEN DELICIOUS')]
+    train = train.drop(columns = ['Commodities', 'Date'], axis = 1)
+    test = test.drop(columns = ['Commodities', 'Date', 'Index'], axis = 1)
+
+    #Get dummies
+    dtrain = pd.get_dummies(data=train, columns=['Province','Container', 'Size_Grade'], drop_first=True)
+    test = pd.get_dummies(data=test, columns=['Province','Container', 'Size_Grade'], drop_first=True)
+
+    column_titles = [col for col in dtrain.columns if col!= 'avg_price_per_kg'] + ['avg_price_per_kg']
+    dtrain=dtrain.reindex(columns=column_titles)
+
+    X = dtrain.drop(columns = ['avg_price_per_kg'],axis=1)
+    y = dtrain['avg_price_per_kg']
+
+    #Splits the dataset
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1, shuffle=False)
+
+    RF = RandomForestRegressor(n_estimators=30, max_depth=5)
+    RF.fit(X_train,y_train)
+    pred_train_RF= RF.predict(X_train)
+    #print(np.sqrt(mean_squared_error(y_train,pred_train_rr)))
+    #print(r2_score(y_train, pred_train_rr))
+
+    pred_test_RF= RF.predict(X_test)
                                 
     # ------------------------------------------------------------------------
-
-    return predict_vector
+    #return predict_vector
+    return pred_test_RF                            
+    # ------------------------------------------------------------------------
 
 def load_model(path_to_model:str):
     """Adapter function to load our pretrained model into memory.
