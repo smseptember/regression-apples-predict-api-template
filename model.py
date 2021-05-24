@@ -64,8 +64,8 @@ def _preprocess_data(data):
     #feature_vector_df = feature_vector_df[(feature_vector_df['Commodities'] == 'APPLE GOLDEN DELICIOUS')]
     #predict_vector = feature_vector_df[['Total_Qty_Sold','Stock_On_Hand']]
     
-    train = pd.read_csv('train_set.csv')
-    test = pd.read_csv('test_set.csv')
+    #train = pd.read_csv('train_set.csv')
+    #test = pd.read_csv('test_set.csv')
 
     train = train.loc[(train['Commodities'] == 'APPLE GOLDEN DELICIOUS')]
     train = train.drop(columns = ['Commodities', 'Date'], axis = 1)
