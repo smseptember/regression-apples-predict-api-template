@@ -71,22 +71,6 @@ def _preprocess_data(data):
     train = train.drop(columns = ['Commodities', 'Date'], axis = 1)
     test = test.drop(columns = ['Commodities', 'Date', 'Index'], axis = 1)
 
-    #Get dummies
-    dtrain = pd.get_dummies(data=train, columns=['Province','Container', 'Size_Grade'], drop_first=True)
-    test = pd.get_dummies(data=test, columns=['Province','Container', 'Size_Grade'], drop_first=True)
-
-    column_titles = [col for col in dtrain.columns if col!= 'avg_price_per_kg'] + ['avg_price_per_kg']
-    dtrain=dtrain.reindex(columns=column_titles)
-
-    X = dtrain.drop(columns = ['avg_price_per_kg'],axis=1)
-    y = dtrain['avg_price_per_kg']
-
-    #Splits the dataset
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1, shuffle=False)
-
-    RF = RandomForestRegressor(n_estimators=30, max_depth=5)
-    RF.fit(X_train,y_train)
-    pred_train_RF= RF.predict(X_train)
     #print(np.sqrt(mean_squared_error(y_train,pred_train_rr)))
     #print(r2_score(y_train, pred_train_rr))
 
