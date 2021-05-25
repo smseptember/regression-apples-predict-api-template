@@ -70,12 +70,24 @@ def _preprocess_data(data):
 
     #print(np.sqrt(mean_squared_error(y_train,pred_train_rr)))
     #print(r2_score(y_train, pred_train_rr))
+    
+    X = train.drop(columns = ['avg_price_per_kg'],axis=1)
+    y = train['avg_price_per_kg']
 
-    pred_test_RF= RF.predict(X_test)
+    #Splits the dataset
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1, shuffle=False)
+
+    lr = LinearRegression()
+    lr.fit(X_train, y_train)
+    pred_train_lr= lr.predict(X_train)
+    #print(np.sqrt(mean_squared_error(y_train,pred_train_rr)))
+    #print(r2_score(y_train, pred_train_rr))
+
+    pred_test_lr= lr.predict(X_test)
                                 
     # ------------------------------------------------------------------------
     #return predict_vector
-    return pred_test_RF                            
+    return pred_test_lr                          
     # ------------------------------------------------------------------------
 
 def load_model(path_to_model:str):
